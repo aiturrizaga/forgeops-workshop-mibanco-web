@@ -4,6 +4,7 @@ import { obtenerCuentas, obtenerMovimientos } from './api';
 // Claves de caché de TanStack Query para esta funcionalidad
 export const cuentasKeys = {
   todas: ['cuentas'] as const,
+  saldos: ['cuentas', 'saldos'] as const,
   movimientos: (cuentaId: string) => ['cuentas', cuentaId, 'movimientos'] as const,
 };
 

@@ -1,13 +1,17 @@
 import { Link } from 'react-router';
 import { ChevronRight, CreditCard, PiggyBank } from 'lucide-react';
 import { chip, tarjeta } from '../../../components/ui';
-import { etiquetaTipoCuenta, formatearMonto } from '../../../utils/format';
+import { etiquetaTipoCuenta } from '../../../utils/format';
 import type { Cuenta } from '../types';
+import { useSaldos } from '../saldosContext';
+import { Monto } from './Monto';
 
 /** Tarjeta de resumen de una cuenta; toda la tarjeta enlaza a su detalle. */
 export function CuentaCard({ cuenta }: { cuenta: Cuenta }) {
   const esTarjeta = cuenta.tipo === 'TARJETA_CREDITO';
   const Icono = esTarjeta ? CreditCard : PiggyBank;
+  // Saldo pedido al API solo si el usuario pulsó «Mostrar saldos»
+  const saldo = useSaldos().saldoDe(cuenta.id);
 
   return (
     <Link
@@ -25,11 +29,12 @@ export function CuentaCard({ cuenta }: { cuenta: Cuenta }) {
       <p className="mb-5 text-sm tracking-wide text-muted">{cuenta.numero_enmascarado}</p>
       <p className="text-sm text-muted">{esTarjeta ? 'Línea disponible' : 'Saldo disponible'}</p>
       <p className="text-[1.75rem] leading-tight font-black">
-        {formatearMonto(cuenta.saldo_disponible, cuenta.moneda)}
+        <Monto valor={saldo?.saldo_disponible} moneda={cuenta.moneda} />
       </p>
       <div className="mt-4 flex items-center justify-between border-t border-line pt-4 text-sm">
         <span className="text-muted">
-          Contable: {formatearMonto(cuenta.saldo_contable, cuenta.moneda)}
+          Contable:{' '}
+          <Monto valor={saldo?.saldo_contable} moneda={cuenta.moneda} conSimbolo={false} />
         </span>
         <span className="flex items-center font-bold text-green-600">
           Ver movimientos

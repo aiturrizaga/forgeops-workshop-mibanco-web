@@ -3,6 +3,7 @@ import { AuthProvider } from 'react-oidc-context';
 import { BrowserRouter } from 'react-router';
 import { oidcConfig } from './features/auth/oidcConfig';
 import { SesionProvider } from './features/auth/SesionProvider';
+import { SaldosProvider } from './features/cuentas/SaldosProvider';
 import { esReintentable } from './services/api/errors';
 import { AppRoutes } from './routes/AppRoutes';
 import { variablesFaltantes } from './config/env';
@@ -38,7 +39,9 @@ export function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <SesionProvider>
-            <AppRoutes />
+            <SaldosProvider>
+              <AppRoutes />
+            </SaldosProvider>
           </SesionProvider>
         </BrowserRouter>
       </QueryClientProvider>

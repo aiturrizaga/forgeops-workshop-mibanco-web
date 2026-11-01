@@ -17,6 +17,9 @@ export const oidcConfig: AuthProviderProps = {
   post_logout_redirect_uri: env.oidcPostLogoutRedirectUri,
   scope: env.oidcScope,
   response_type: 'code',
+  // El ID token de AM no trae name/given_name/family_name: se piden a /userinfo
+  // tras el login (requiere CORS en AM para ese endpoint)
+  loadUserInfo: true,
   userStore: new WebStorageStateStore({ store: almacenamiento }),
   // Sin renovación silenciosa: al vencer el token se pide volver a ingresar
   automaticSilentRenew: false,

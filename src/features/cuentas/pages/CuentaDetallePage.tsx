@@ -10,6 +10,9 @@ import type { TipoMovimiento } from '../types';
 import { MovimientosLista } from '../components/MovimientosLista';
 import { ConsumosPorCategoria } from '../components/ConsumosPorCategoria';
 import { ResumenItem } from '../components/ResumenItem';
+import { Monto } from '../components/Monto';
+import { BotonSaldos } from '../components/BotonSaldos';
+import { useSaldos } from '../saldosContext';
 
 type Filtro = 'TODOS' | TipoMovimiento;
 
@@ -25,6 +28,8 @@ export function CuentaDetallePage() {
   const { data, isPending, error, refetch } = useMovimientos(cuentaId);
   // Estado local de UI: filtro de la lista
   const [filtro, setFiltro] = useState<Filtro>('TODOS');
+  // Saldo pedido al API solo si el usuario pulsó «Mostrar saldos»
+  const saldo = useSaldos().saldoDe(cuentaId);
 
   if (isPending) return <Spinner texto="Cargando movimientos…" />;
   if (error) {
@@ -57,11 +62,15 @@ export function CuentaDetallePage() {
             {esTarjeta ? 'Línea disponible' : 'Saldo disponible'}
           </span>
           <strong className="text-[2rem] leading-tight font-black">
-            {formatearMonto(cuenta.saldo_disponible, cuenta.moneda)}
+            <Monto valor={saldo?.saldo_disponible} moneda={cuenta.moneda} />
           </strong>
           <small className="text-white/90">
-            Contable: {formatearMonto(cuenta.saldo_contable, cuenta.moneda)}
+            Contable:{' '}
+            <Monto valor={saldo?.saldo_contable} moneda={cuenta.moneda} conSimbolo={false} />
           </small>
+          <div className="mt-3 sm:self-end">
+            <BotonSaldos />
+          </div>
         </div>
       </header>
 

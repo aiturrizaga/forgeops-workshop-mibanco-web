@@ -4,14 +4,30 @@ export type TipoCuenta = 'AHORROS' | 'CORRIENTE' | 'TARJETA_CREDITO';
 export type Moneda = 'PEN' | 'USD';
 export type TipoMovimiento = 'CARGO' | 'ABONO';
 
+/** Cuenta sin saldos: el API los entrega aparte, solo al pedirlos (ver SaldosResponse). */
 export interface Cuenta {
   id: string;
   tipo: TipoCuenta;
   alias: string;
   numero_enmascarado: string;
   moneda: Moneda;
+}
+
+export interface SaldoCuenta {
+  cuenta_id: string;
+  moneda: Moneda;
   saldo_disponible: number;
   saldo_contable: number;
+}
+
+export interface TotalMoneda {
+  moneda: Moneda;
+  saldo_disponible: number;
+}
+
+export interface SaldosResponse {
+  saldos: SaldoCuenta[];
+  totales: TotalMoneda[]; // sin tarjetas de crédito
 }
 
 export interface Movimiento {

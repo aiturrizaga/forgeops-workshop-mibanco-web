@@ -48,9 +48,8 @@ export function Layout() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <Logo className="h-9" />
-            <span className="font-bold text-ink">Demo técnica</span>
           </div>
-          <span>PingGateway + Access Management · Datos ficticios, no son cuentas reales</span>
+          <span>Cuenta ficticia · Demo técnica</span>
         </div>
       </footer>
     </div>
