@@ -1,0 +1,104 @@
+# Frontend (SPA estática en nginx) expuesto en https://mibanco.arvislab.com
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mibanco-web
+  namespace: lab
+  labels:
+    app.kubernetes.io/name: mibanco-web
+    app.kubernetes.io/part-of: mibanco-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mibanco-web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mibanco-web
+        app.kubernetes.io/part-of: mibanco-demo
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101 # usuario nginx de la imagen nginx-unprivileged
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: web
+          image: mibanco-web:1.0.0
+          # Construida dentro del Docker de Minikube; nunca se descarga
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ['ALL']
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mibanco-web
+  namespace: lab
+  labels:
+    app.kubernetes.io/name: mibanco-web
+    app.kubernetes.io/part-of: mibanco-demo
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: mibanco-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+# cert-manager emite el certificado al ver la anotación cluster-issuer y el bloque tls.
+# ingressClassName "nginx": la misma clase que usan todos los Ingress de ForgeOps en
+# `lab` (verificado con kubectl -n lab get ingress), así lo atiende el mismo controlador.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mibanco-web
+  namespace: lab
+  labels:
+    app.kubernetes.io/name: mibanco-web
+    app.kubernetes.io/part-of: mibanco-demo
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - mibanco.arvislab.com
+      secretName: mibanco-web-tls
+  rules:
+    - host: mibanco.arvislab.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mibanco-web
+                port:
+                  name: http

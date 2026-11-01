@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.local
+# Nunca subir valores reales; solo .env.example
+.env
+.env.*
+!.env.example

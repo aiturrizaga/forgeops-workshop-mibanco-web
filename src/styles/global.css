@@ -1,0 +1,85 @@
+/*
+ * Identidad visual Mibanco sobre Tailwind CSS v4 (ver DESIGN.md).
+ * Valores extraídos del CSS de www.mibanco.com.pe el 01/11/2026 (sección 0.2).
+ */
+@import 'tailwindcss';
+
+/* Lato: fuente real del sitio, licencia OFL (DESIGN.md §4.4) */
+@import '@fontsource/lato/400.css';
+@import '@fontsource/lato/700.css';
+@import '@fontsource/lato/900.css';
+
+@theme {
+  --font-sans: 'Lato', ui-sans-serif, system-ui, sans-serif;
+  /* Brevia (comercial) es la fuente del H1 del sitio; hasta tener los .woff2, Lato */
+  --font-display: 'Lato', ui-sans-serif, system-ui, sans-serif;
+
+  /* Verde primario (--bs-primary-*) */
+  --color-green-25: #ecf7f0;
+  --color-green-50: #d0f7de;
+  --color-green-100: #ccead6;
+  --color-green-200: #70c28b;
+  --color-green-400: #33a95a;
+  --color-green-500: #009330; /* primario */
+  --color-green-600: #008029; /* botones con texto blanco y texto verde */
+  --color-green-700: #006421; /* hover */
+  --color-green-900: #003310; /* superficies oscuras */
+  --color-logo-green: #71b74c;
+
+  /* Amarillo (--bs-secondary-*) */
+  --color-yellow-50: #fffae5;
+  --color-yellow-100: #fff6cc;
+  --color-yellow-400: #ffd833;
+  --color-yellow-500: #ffce00; /* marca */
+
+  /* Neutros y semánticos */
+  --color-ink: #1c1c1f;
+  --color-muted: #656d78;
+  --color-line: #e6e9ed;
+  --color-line-strong: #aab2bd;
+  --color-surface: #f6f8fa;
+  --color-danger: #cf2a34;
+  --color-danger-soft: #fdecea;
+
+  /* Montos */
+  --color-cargo: #cf2a34;
+  --color-abono: #008029;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+
+  --shadow-card: 0 4px 16px rgb(0 51 16 / 0.08);
+
+  --text-display: 3.25rem;
+  --text-display--line-height: 1.15;
+  --text-h2: 2.25rem;
+  --text-h2--line-height: 1.2;
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 1.3;
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.5;
+
+  --animate-marquee: marquee 30s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-white font-sans text-ink antialiased;
+  }
+
+  /* Foco visible en amarillo de marca (DESIGN.md §9.1) */
+  :focus-visible {
+    outline: 3px solid var(--color-yellow-500);
+    outline-offset: 2px;
+  }
+}
